@@ -10,35 +10,35 @@ import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
-import k8s.local.UserRegistryActor._
+import k8s.local.GeoRegistryActor._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-trait UserRoutes extends JsonSupport {
+trait GeoRoutes extends JsonSupport {
 
   implicit def system: ActorSystem
-  def userRegistryActor: ActorRef
+  def geoRegistryActor: ActorRef
 
-  lazy val userLog = Logging(system, classOf[UserRoutes])
-  implicit lazy val userTimeout: Timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
+  lazy val geoLog = Logging(system, classOf[GeoRoutes])
+  implicit lazy val geoTimeout: Timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
 
-  lazy val userRoutes: Route =
-    pathPrefix("users") {
+  lazy val geoRoutes: Route =
+    pathPrefix("geo") {
       concat(
         pathEnd {
           concat(
             get {
-              val users: Future[Users] =
-                (userRegistryActor ? GetUsers).mapTo[Users]
+              val users: Future[Geos] =
+                (geoRegistryActor ? GetGeos).mapTo[Geos]
               complete(users)
             },
             post {
-              entity(as[User]) { user =>
-                val userCreated: Future[ActionPerformed] =
-                  (userRegistryActor ? CreateUser(user)).mapTo[ActionPerformed]
-                onSuccess(userCreated) { performed =>
-                  userLog.info("Created user [{}]: {}", user.name, performed.description)
+              entity(as[Geo]) { geo =>
+                val geoCreated: Future[GeoPerformed] =
+                  (geoRegistryActor ? CreateGeo(geo)).mapTo[GeoPerformed]
+                onSuccess(geoCreated) { performed =>
+                  geoLog.info("Created geo [{}]: {}", geo.name, performed.description)
                   complete((StatusCodes.Created, performed))
                 }
               }
@@ -49,7 +49,7 @@ trait UserRoutes extends JsonSupport {
           concat(
             get {
               val maybeUser: Future[Option[User]] =
-                (userRegistryActor ? GetUser(name)).mapTo[Option[User]]
+                (geoRegistryActor ? GetGeo(name)).mapTo[Option[User]]
               rejectEmptyResponse {
                 complete(maybeUser)
               }

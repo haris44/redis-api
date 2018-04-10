@@ -1,57 +1,45 @@
 package k8s.local
-
-//#user-registry-actor
-import akka.actor.{Actor, ActorLogging, Props}
-import scredis.Redis
+import akka.actor.{ Actor, ActorLogging, Props }
+import com.redis._
 import spray.json._
 
-//#user-case-classes
-final case class User(name: String, age: Int, countryOfResidence: String)
-
-final case class Users(users: Seq[User])
-
-//#user-case-classes
+final case class User(username: String, name: String)
+final case class Users(users: List[User])
 
 object UserRegistryActor {
 
-  final case class ActionPerformed(description: String)
-
   final case object GetUsers
-
+  final case class ActionPerformed(description: String)
   final case class CreateUser(user: User)
-
   final case class GetUser(name: String)
-
-  final case class DeleteUser(name: String)
-
   def props: Props = Props[UserRegistryActor]
 }
 
 class UserRegistryActor extends Actor with JsonSupport with ActorLogging {
 
   import UserRegistryActor._
-  import akka.pattern.pipe
-  import context.dispatcher
 
-  var users = Set.empty[User]
-  val redis = Redis()
-
+  val users = List.empty[User]
+  private val redis = new RedisClient("localhost", 6379)
 
   def receive: Receive = {
     case GetUsers =>
-      val ft = redis.lRange[String]("users", 0, 100)  map  {
-        values : List[String] => Users(values.map(value => value.parseJson.convertTo[User]))
-      }
-      ft pipeTo sender()
+      sender() ! Users(redis.lrange[String]("users", 0, 100)
+        .getOrElse(List.empty[Option[User]])
+        .map({
+          case Some(test: String) => test.parseJson.convertTo[User]
+        }))
+
     case CreateUser(user) =>
-      redis.lPush("users", user.toJson.toString)
+      redis.lpush("users", user.toJson.toString)
       sender() ! ActionPerformed(s"User ${user.name} created.")
-    case GetUser(name) =>
-      sender() ! users.find(_.name == name)
-    case DeleteUser(name) =>
-      users.find(_.name == name) foreach { user => users -= user }
-      sender() ! ActionPerformed(s"User ${name} deleted.")
+
+    case GetUser(username) =>
+      sender() ! redis.lrange[String]("users", 0, 100)
+        .getOrElse(List.empty[Option[User]])
+        .map({
+          case Some(test: String) => test.parseJson.convertTo[User]
+        })
+        .find(el => el.username == username)
   }
 }
-
-//#user-registry-actor
