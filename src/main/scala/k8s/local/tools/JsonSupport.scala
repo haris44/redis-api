@@ -1,9 +1,9 @@
 package k8s.local.tools
 
-import k8s.local.dto.{KubernetesMember, KubernetesMembers, UserGeo}
+import k8s.local.dto.{ KubernetesMember, KubernetesMembers, UserGeo }
 import k8s.local.registry.GeoRegistryActor.GeoPerformed
 import k8s.local.registry.UserRegistryActor.ActionPerformed
-import k8s.local.registry.{Geo, Geos, User, Users}
+import k8s.local.registry.{ Geo, Geos, User, Users }
 
 //#json-support
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
