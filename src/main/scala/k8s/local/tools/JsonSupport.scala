@@ -1,9 +1,9 @@
 package k8s.local.tools
 
-import k8s.local.dto.UserGeo
+import k8s.local.dto.{KubernetesMember, KubernetesMembers, UserGeo}
 import k8s.local.registry.GeoRegistryActor.GeoPerformed
 import k8s.local.registry.UserRegistryActor.ActionPerformed
-import k8s.local.registry.{ Geo, Geos, User, Users }
+import k8s.local.registry.{Geo, Geos, User, Users}
 
 //#json-support
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -16,6 +16,8 @@ trait JsonSupport extends SprayJsonSupport {
   implicit val userJsonFormat = jsonFormat3(User)
   implicit val usersJsonFormat = jsonFormat1(Users)
 
+  implicit val kubernetesMemberJsonFormat = jsonFormat2(KubernetesMember)
+  implicit val kubernetesMembersJsonFormat = jsonFormat1(KubernetesMembers)
   implicit val userGeoJsonFormat = jsonFormat4(UserGeo)
 
   implicit val geoJsonFormat = jsonFormat3(Geo)
