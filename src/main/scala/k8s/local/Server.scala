@@ -1,7 +1,7 @@
 package k8s.local
 
 //#quick-start-server
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
@@ -9,9 +9,11 @@ import akka.stream.ActorMaterializer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import akka.http.scaladsl.server.Directives._
+import k8s.local.registry.{GeoRegistryActor, UserRegistryActor}
+import k8s.local.routes.{GeoRoutes, LoginRoutes, UserRoutes}
 
 //#main-class
-object QuickstartServer extends App with UserRoutes with GeoRoutes {
+object Server extends App with UserRoutes with GeoRoutes with LoginRoutes {
 
   // set up ActorSystem and other dependencies here
   //#main-class
@@ -28,13 +30,13 @@ object QuickstartServer extends App with UserRoutes with GeoRoutes {
 
   //#main-class
   // from the UserRoutes trait
-  lazy val routes: Route = userRoutes ~ geoRoutes
+  lazy val routes: Route = userRoutes ~ geoRoutes ~ loginRoutes
   //#main-class
 
   //#http-server
-  Http().bindAndHandle(routes, "localhost", 8080)
+  Http().bindAndHandle(routes, "0.0.0.0", 8080)
 
-  println(s"Server online at http://localhost:8080/")
+  println(s"Server online at http://0.0.0.0:8080/")
 
   Await.result(system.whenTerminated, Duration.Inf)
   //#http-server
