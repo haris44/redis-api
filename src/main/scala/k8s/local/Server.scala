@@ -1,6 +1,6 @@
 package k8s.local
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
@@ -8,11 +8,10 @@ import akka.stream.ActorMaterializer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import akka.http.scaladsl.server.Directives._
-import k8s.local.registry.{GeoRegistryActor, UserRegistryActor}
-import k8s.local.routes.{GeoRoutes, LoginRoutes, UserRoutes}
+import k8s.local.registry.{ GeoRegistryActor, UserRegistryActor }
+import k8s.local.routes.{ GeoRoutes, LoginRoutes, UserRoutes }
 
 object Server extends App with UserRoutes with GeoRoutes with LoginRoutes {
-
 
   val actorSystemName = sys.env("AKKA_ACTOR_SYSTEM_NAME")
   implicit val system: ActorSystem = ActorSystem(actorSystemName)

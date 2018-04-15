@@ -1,11 +1,11 @@
 package k8s.local.routes
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.MethodDirectives.{get, post}
+import akka.http.scaladsl.server.directives.MethodDirectives.{ get, post }
 import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
@@ -13,7 +13,7 @@ import akka.util.Timeout
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import k8s.local.registry.User
 import k8s.local.registry.UserRegistryActor._
-import k8s.local.tools.{Authentication, JsonSupport}
+import k8s.local.tools.{ Authentication, JsonSupport }
 import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.Future

@@ -1,6 +1,6 @@
 package k8s.local.routes
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.RawHeader
@@ -14,7 +14,7 @@ import authentikat.jwt.JsonWebToken
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
 import k8s.local.registry.User
 import k8s.local.registry.UserRegistryActor.GetUser
-import k8s.local.tools.{Authentication, JsonSupport, LoginRequest}
+import k8s.local.tools.{ Authentication, JsonSupport, LoginRequest }
 import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.duration._
@@ -38,14 +38,12 @@ trait LoginRoutes extends JsonSupport {
             entity(as[LoginRequest]) { lr =>
               val user = (userRegistryActor ? GetUser(lr.username)).mapTo[User]
               onSuccess(user) { usr =>
-                if(lr.username == usr.username && BCrypt.checkpw(lr.password, usr.password)) {
+                if (lr.username == usr.username && BCrypt.checkpw(lr.password, usr.password)) {
                   val claims = Authentication.setClaims(lr.username, tokenExpiryPeriodInDays)
                   respondWithHeader(RawHeader("Access-Token", JsonWebToken(Authentication.header, claims, Authentication.secretKey))) {
                     complete(StatusCodes.OK)
                   }
-                }
-                else
-                {
+                } else {
                   complete(StatusCodes.Unauthorized)
                 }
               }

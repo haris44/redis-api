@@ -4,15 +4,15 @@ import java.util.concurrent.TimeUnit
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directive1
-import akka.http.scaladsl.server.Directives.{optionalHeaderValueByName, provide}
+import akka.http.scaladsl.server.Directives.{ optionalHeaderValueByName, provide }
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
-import authentikat.jwt.{JsonWebToken, JwtClaimsSet, JwtHeader}
+import authentikat.jwt.{ JsonWebToken, JwtClaimsSet, JwtHeader }
 
 final case class LoginRequest(username: String, password: String)
 
 object Authentication {
 
-  val secretKey = "super_secret_key"
+  val secretKey =  sys.env("JWT_TOKEN")
   val header = JwtHeader("HS256")
 
   def authenticated: Directive1[Map[String, Any]] =

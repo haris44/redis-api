@@ -1,6 +1,6 @@
 package k8s.local.routes
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
@@ -10,10 +10,10 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
-import k8s.local.dto.{GeoRequest, UserGeo}
+import k8s.local.dto.{ GeoRequest, UserGeo }
 import k8s.local.registry.GeoRegistryActor._
 import k8s.local.registry.Geos
-import k8s.local.tools.{Authentication, JsonSupport}
+import k8s.local.tools.{ Authentication, JsonSupport }
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -47,7 +47,7 @@ trait GeoRoutes extends JsonSupport {
             get {
               Authentication.authenticated { _ =>
                 parameters('x, 'y, 'distance) { (x, y, distance) =>
-                val geos =
+                  val geos =
                     (geoRegistryActor ? GetGeos(GeoRequest(x.toFloat, y.toFloat, distance.toInt))).mapTo[Geos]
                   rejectEmptyResponse {
                     complete(geos)

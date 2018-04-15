@@ -1,6 +1,6 @@
 package k8s.local.registry
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{ Actor, ActorLogging, Props }
 import com.redis._
 import k8s.local.tools.JsonSupport
 import spray.json._
