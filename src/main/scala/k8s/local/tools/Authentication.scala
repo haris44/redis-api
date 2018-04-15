@@ -12,7 +12,7 @@ final case class LoginRequest(username: String, password: String)
 
 object Authentication {
 
-  val secretKey =  sys.env("JWT_TOKEN")
+  val secretKey = sys.env("JWT_TOKEN")
   val header = JwtHeader("HS256")
 
   def authenticated: Directive1[Map[String, Any]] =
