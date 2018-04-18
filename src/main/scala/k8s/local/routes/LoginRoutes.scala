@@ -12,19 +12,24 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import authentikat.jwt.JsonWebToken
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
+import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 import k8s.local.registry.User
 import k8s.local.registry.UserRegistryActor.GetUser
-import k8s.local.tools.{ Authentication, JsonSupport, LoginRequest }
+import k8s.local.tools.{Authentication, JsonSupport, LoginRequest}
 import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.collection.immutable.Seq
 
 trait LoginRoutes extends JsonSupport {
   private val tokenExpiryPeriodInDays = 1
 
+  val headers : Seq[String] = Seq("Access-Token")
+   val corsSettings : CorsSettings = CorsSettings.defaultSettings.withExposedHeaders(headers)
+
   def loginRoutes(userRegistryActor: ActorRef, askTimeout: FiniteDuration)(implicit mat: ActorMaterializer, ec: ExecutionContext, rs: RoutingSettings): Route =
-    cors() {
+    cors(corsSettings) {
       pathPrefix("login") {
         pathEnd {
           concat(

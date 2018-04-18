@@ -10,6 +10,9 @@ import authentikat.jwt.{ JsonWebToken, JwtClaimsSet, JwtHeader }
 
 final case class LoginRequest(username: String, password: String)
 
+
+
+
 object Authentication {
 
   val secretKey = sys.env("JWT_TOKEN")
