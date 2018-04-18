@@ -41,7 +41,8 @@ class GeoRegistryActor extends Actor with JsonSupport with ActorLogging {
       val uuid = randomUUID()
       redis.set(uuid, geo.toJson.toString)
       redis.geoadd("maps", Seq((geo.x, geo.y, uuid)))
-      sender() ! GeoPerformed(s"geo $uuid created.")
+      redis.publish("mapsChannel", uuid.toString)
+      sender() ! GeoPerformed(uuid.toString)
 
   }
 }
