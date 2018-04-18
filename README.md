@@ -16,8 +16,8 @@ Concernant la partie Frontend, nous avons couplé nos connaissances d'OpenLayers
 
 * Nathan Grimaud [@grimaudnathan](https://github.com/NathanGrimaud) (Front)
 * Denyse Sylvain [@SylvainDNS](https://github.com/sylvainDNS) (Node/Socket.io) 
-* Bouriez Cyril [](https://github.com/haris44/) (Cordova) 
-* Bertrand Alexandre [@haris44](https://github.com/haris44/) (Scala Akka-HTTP
+* Bouriez Cyril [@B-Cyril](https://github.com/https://github.com/B-cyril) (Cordova) 
+* Bertrand Alexandre [@haris44](https://github.com/haris44/) (Scala Akka-HTTP)
 
 ### Système et réseau : 
 
