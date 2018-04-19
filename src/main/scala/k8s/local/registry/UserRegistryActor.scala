@@ -37,7 +37,7 @@ class UserRegistryActor extends Actor with JsonSupport with ActorLogging {
 
     case GetUser(username) =>
       sender() ! redis.get[String]("users:" + username)
-        .map(user => user.parseJson.convertTo[User])
-        .getOrElse(Option.empty[User])
+        .map(user => user.parseJson.convertTo[User]) equals ()
+
   }
 }

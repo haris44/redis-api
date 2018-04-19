@@ -35,12 +35,12 @@ trait LoginRoutes extends JsonSupport {
           concat(
             post {
               entity(as[LoginRequest]) { lr =>
-                val user = userRegistryActor.ask(GetUser(lr.username))(askTimeout).mapTo[User]
-                onSuccess(user) { usr =>
-                  if (lr.username == usr.username && BCrypt.checkpw(lr.password, usr.password)) {
+                val user = userRegistryActor.ask(GetUser(lr.username))(askTimeout).mapTo[Option[User]]
+                onSuccess(user) { usrOpt =>
+                  if (usrOpt.nonEmpty && usrOpt.get.username != "" && lr.username == usrOpt.get.username && BCrypt.checkpw(lr.password, usrOpt.get.password)) {
                     val claims = Authentication.setClaims(lr.username, tokenExpiryPeriodInDays)
                     respondWithHeader(RawHeader("Access-Token", JsonWebToken(Authentication.header, claims, Authentication.secretKey))) {
-                      complete(StatusCodes.OK)
+                      complete(StatusCodes.OK, lr.username)
                     }
                   } else {
                     complete(StatusCodes.Unauthorized)
@@ -49,7 +49,7 @@ trait LoginRoutes extends JsonSupport {
               }
             }, get {
               Authentication.authenticated { claims =>
-                complete(s"User ${claims.getOrElse("user", "")} accessed secured content!")
+                complete(claims.getOrElse("user", "").toString)
               }
             }
           )
