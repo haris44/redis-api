@@ -83,8 +83,8 @@ Modèle :
 
 ```
 SET users:$USERNAME {username, name, password}
-GEO maps $UUID {lat, lng}
-SET userGeo:$UUID {username, timestamp, lat, lng}
+GEO maps $USERNAME {lat, lng}
+SET userGeo:$USERNAME {username, timestamp, lat, lng}
 ```
 
 ### Frontend :
